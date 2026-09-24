@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useTienda } from "@/context/TiendaContext";
 
 export function Header() {
@@ -10,7 +9,7 @@ export function Header() {
     <nav>
       <div className="wrap nav-inner">
         <a href="#inicio" className="brand-logo-box">
-          <Image src="/img/logo.png" alt="Los Últimos 10 Choriz" width={44} height={44} className="brand-logo" />
+          <img src="/img/logo.png" alt="Los Últimos 10 Choriz" className="brand-logo" />
           <span className="brand-name disp">Los Últimos 10 Choriz</span>
         </a>
 
