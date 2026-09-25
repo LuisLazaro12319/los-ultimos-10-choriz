@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { onAuthStateChanged, signOut, type User } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { getFirebaseAuth } from "@/lib/firebase";
 import { seedIfEmpty } from "@/lib/data";
 import { AdminLogin } from "@/components/admin/AdminLogin";
 import { AdminProductos } from "@/components/admin/AdminProductos";
@@ -14,17 +14,38 @@ type Tab = "productos" | "categorias" | "promo";
 export default function AdminPage() {
   const [usuario, setUsuario] = useState<User | null>(null);
   const [cargandoAuth, setCargandoAuth] = useState(true);
+  const [errorConfig, setErrorConfig] = useState(false);
   const [tab, setTab] = useState<Tab>("productos");
   const [sembrando, setSembrando] = useState(false);
 
   useEffect(() => {
-    return onAuthStateChanged(auth, (u) => {
-      setUsuario(u);
+    try {
+      return onAuthStateChanged(getFirebaseAuth(), (u) => {
+        setUsuario(u);
+        setCargandoAuth(false);
+      });
+    } catch {
+      setErrorConfig(true);
       setCargandoAuth(false);
-    });
+    }
   }, []);
 
   if (cargandoAuth) return null;
+  if (errorConfig) {
+    return (
+      <div className="admin-shell">
+        <div className="admin-login-box">
+          <h1 className="disp" style={{ fontSize: "1.5rem", marginBottom: ".5rem" }}>
+            Panel admin no configurado
+          </h1>
+          <p className="admin-hint">
+            Todavía falta cargar la configuración de Firebase para este sitio. La tienda pública funciona igual,
+            este mensaje solo aparece acá en /admin.
+          </p>
+        </div>
+      </div>
+    );
+  }
   if (!usuario) return <AdminLogin />;
 
   async function cargarDatosIniciales() {
@@ -47,7 +68,7 @@ export default function AdminPage() {
             <button className="admin-btn admin-btn-ghost" onClick={cargarDatosIniciales} disabled={sembrando}>
               {sembrando ? "Cargando..." : "Cargar datos de ejemplo"}
             </button>
-            <button className="admin-btn admin-btn-ghost" onClick={() => signOut(auth)}>
+            <button className="admin-btn admin-btn-ghost" onClick={() => signOut(getFirebaseAuth())}>
               Salir
             </button>
           </div>

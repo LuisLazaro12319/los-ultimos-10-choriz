@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { getFirebaseAuth } from "@/lib/firebase";
 
 export function AdminLogin() {
   const [email, setEmail] = useState("");
@@ -15,7 +15,7 @@ export function AdminLogin() {
     setError("");
     setCargando(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmailAndPassword(getFirebaseAuth(), email, password);
     } catch {
       setError("Email o contraseña incorrectos.");
     } finally {
