@@ -1,11 +1,10 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useTienda } from "@/context/TiendaContext";
 import { addProducto, updateProducto, deleteProducto } from "@/lib/data";
 import { precio } from "@/lib/formato";
-import { storage } from "@/lib/firebase";
+import { subirImagenACloudinary } from "@/lib/cloudinary";
 import { ImageCropModal } from "./ImageCropModal";
 import type { Producto } from "@/lib/types";
 
@@ -80,13 +79,10 @@ export function AdminProductos() {
     setFotoParaRecortar(null);
     setSubiendo(true);
     try {
-      const nombreArchivo = `productos/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.jpg`;
-      const storageRef = ref(storage, nombreArchivo);
-      await uploadBytes(storageRef, blob, { contentType: "image/jpeg" });
-      const url = await getDownloadURL(storageRef);
+      const url = await subirImagenACloudinary(blob);
       setForm((f) => ({ ...f, imagen: url }));
-    } catch {
-      alert("No se pudo subir la foto. Probá de nuevo.");
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "No se pudo subir la foto. Probá de nuevo.");
     } finally {
       setSubiendo(false);
     }
