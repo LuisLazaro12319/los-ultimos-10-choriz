@@ -241,3 +241,21 @@ footer { background: #110906; color: rgba(255, 255, 255, 0.6); padding: 3.5rem 0
 .admin-error { color: #f87171; font-size: 0.82rem; margin-top: 0.6rem; }
 .admin-hint { color: var(--fg-faint); font-size: 0.75rem; margin-top: 0.4rem; }
 .admin-toggle-row { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1rem; font-size: 0.85rem; font-weight: 700; }
+
+.admin-image-field { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
+.admin-image-preview {
+  width: 96px; aspect-ratio: 16 / 10; border-radius: 0.6rem; overflow: hidden; border: 1px solid var(--line);
+  background: #000; flex-shrink: 0;
+}
+.admin-image-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.admin-image-preview.is-empty { display: flex; align-items: center; justify-content: center; color: var(--fg-faint); font-size: 0.65rem; text-align: center; padding: 0.3rem; }
+
+.crop-modal-overlay {
+  position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75); z-index: 100;
+  display: flex; align-items: center; justify-content: center; padding: 1.2rem;
+}
+.crop-modal { background: var(--card); border: 1px solid var(--line); border-radius: 1rem; padding: 1.5rem; width: 100%; max-width: 480px; }
+.crop-modal-stage { position: relative; width: 100%; aspect-ratio: 16 / 10; background: #000; border-radius: 0.6rem; overflow: hidden; }
+.crop-modal-zoom { display: flex; align-items: center; gap: 0.8rem; margin-top: 1rem; }
+.crop-modal-zoom input[type="range"] { flex: 1; }
+.crop-modal-actions { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 1.2rem; }

@@ -1,18 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useTienda } from "@/context/TiendaContext";
 import { addProducto, updateProducto, deleteProducto } from "@/lib/data";
 import { precio } from "@/lib/formato";
+import { storage } from "@/lib/firebase";
+import { ImageCropModal } from "./ImageCropModal";
 import type { Producto } from "@/lib/types";
 
 const VACIO = { nombre: "", descripcion: "", precio: "", categoriaId: "", imagen: "" };
+
+// Misma proporcion que el recuadro de foto en el menu (.card-img-wrap { aspect-ratio: 16 / 10 })
+const ASPECTO_FOTO = 16 / 10;
+const ANCHO_SALIDA = 960;
+const ALTO_SALIDA = 600;
 
 export function AdminProductos() {
   const { productos, categorias } = useTienda();
   const [form, setForm] = useState(VACIO);
   const [editandoId, setEditandoId] = useState<string | null>(null);
   const [guardando, setGuardando] = useState(false);
+  const [subiendo, setSubiendo] = useState(false);
+  const [fotoParaRecortar, setFotoParaRecortar] = useState<string | null>(null);
+  const inputArchivoRef = useRef<HTMLInputElement>(null);
 
   function editar(p: Producto) {
     setEditandoId(p.id);
@@ -54,6 +65,31 @@ export function AdminProductos() {
   async function eliminar(id: string) {
     if (!confirm("¿Eliminar este producto?")) return;
     await deleteProducto(id);
+  }
+
+  function onArchivoElegido(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    const lector = new FileReader();
+    lector.onload = () => setFotoParaRecortar(lector.result as string);
+    lector.readAsDataURL(file);
+  }
+
+  async function onRecorteConfirmado(blob: Blob) {
+    setFotoParaRecortar(null);
+    setSubiendo(true);
+    try {
+      const nombreArchivo = `productos/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.jpg`;
+      const storageRef = ref(storage, nombreArchivo);
+      await uploadBytes(storageRef, blob, { contentType: "image/jpeg" });
+      const url = await getDownloadURL(storageRef);
+      setForm((f) => ({ ...f, imagen: url }));
+    } catch {
+      alert("No se pudo subir la foto. Probá de nuevo.");
+    } finally {
+      setSubiendo(false);
+    }
   }
 
   return (
@@ -102,12 +138,38 @@ export function AdminProductos() {
               ))}
             </select>
           </div>
-          <div className="field">
-            <label>URL de imagen</label>
+          <div className="field field-wide">
+            <label>Foto del producto</label>
+            <div className="admin-image-field">
+              <div className={`admin-image-preview${form.imagen ? "" : " is-empty"}`}>
+                {form.imagen ? <img src={form.imagen} alt="Vista previa" /> : "Sin foto"}
+              </div>
+              <div>
+                <input
+                  ref={inputArchivoRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={onArchivoElegido}
+                  style={{ display: "none" }}
+                />
+                <button
+                  type="button"
+                  className="admin-btn admin-btn-ghost"
+                  onClick={() => inputArchivoRef.current?.click()}
+                  disabled={subiendo}
+                >
+                  {subiendo ? "Subiendo..." : "Subir foto desde mi dispositivo"}
+                </button>
+                <p className="admin-hint" style={{ marginBottom: 0 }}>
+                  Vas a poder mover y ajustar el zoom antes de guardarla.
+                </p>
+              </div>
+            </div>
             <input
               value={form.imagen}
               onChange={(e) => setForm({ ...form, imagen: e.target.value })}
-              placeholder="/img/promo.jpg o https://..."
+              placeholder="o pegá una URL: /img/promo.jpg o https://..."
+              style={{ marginTop: ".6rem" }}
             />
           </div>
         </div>
@@ -148,6 +210,17 @@ export function AdminProductos() {
         ))}
         {productos.length === 0 && <p className="admin-hint">Todavía no hay productos cargados.</p>}
       </div>
+
+      {fotoParaRecortar && (
+        <ImageCropModal
+          imageSrc={fotoParaRecortar}
+          aspect={ASPECTO_FOTO}
+          outputWidth={ANCHO_SALIDA}
+          outputHeight={ALTO_SALIDA}
+          onCancel={() => setFotoParaRecortar(null)}
+          onConfirm={onRecorteConfirmado}
+        />
+      )}
     </div>
   );
 }
