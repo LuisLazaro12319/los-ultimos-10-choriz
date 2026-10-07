@@ -25,6 +25,8 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://losultimos10choriz.com.ar"),
+  alternates: { canonical: "/" },
   title: "Los Últimos 10 Choriz | Parrilla & Choripanes",
   description:
     "Los Últimos 10 Choriz — Parrilla al paso y choripanes artesanales. Pedí el tuyo por WhatsApp con delivery o retiro.",
