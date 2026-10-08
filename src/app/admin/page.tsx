@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { onAuthStateChanged, signOut, type User } from "firebase/auth";
 import { getFirebaseAuth } from "@/lib/firebase";
-import { seedIfEmpty } from "@/lib/data";
+import { cargarCatalogo, seedIfEmpty } from "@/lib/data";
+import { useTienda } from "@/context/TiendaContext";
 import { AdminLogin } from "@/components/admin/AdminLogin";
 import { AdminProductos } from "@/components/admin/AdminProductos";
 import { AdminCategorias } from "@/components/admin/AdminCategorias";
@@ -17,6 +18,16 @@ export default function AdminPage() {
   const [errorConfig, setErrorConfig] = useState(false);
   const [tab, setTab] = useState<Tab>("productos");
   const [sembrando, setSembrando] = useState(false);
+  const [errorDatos, setErrorDatos] = useState("");
+  const { aplicarCatalogo } = useTienda();
+
+  // El admin siempre trabaja sobre el menu real de la base, no sobre la copia guardada en el navegador.
+  useEffect(() => {
+    if (!usuario) return;
+    cargarCatalogo(true)
+      .then(aplicarCatalogo)
+      .catch(() => setErrorDatos("No se pudo leer el menú. Revisá tu conexión y recargá la página."));
+  }, [usuario, aplicarCatalogo]);
 
   useEffect(() => {
     try {
@@ -50,8 +61,11 @@ export default function AdminPage() {
 
   async function cargarDatosIniciales() {
     setSembrando(true);
+    setErrorDatos("");
     try {
-      await seedIfEmpty();
+      aplicarCatalogo(await seedIfEmpty());
+    } catch (err) {
+      setErrorDatos(err instanceof Error ? err.message : "No se pudieron cargar los datos de ejemplo.");
     } finally {
       setSembrando(false);
     }
@@ -73,6 +87,12 @@ export default function AdminPage() {
             </button>
           </div>
         </div>
+
+        {errorDatos && (
+          <p className="admin-hint" role="alert" style={{ color: "#ff6b6b", marginBottom: ".8rem" }}>
+            {errorDatos}
+          </p>
+        )}
 
         <div className="admin-tabs">
           <button className={`admin-tab ${tab === "productos" ? "active" : ""}`} onClick={() => setTab("productos")}>

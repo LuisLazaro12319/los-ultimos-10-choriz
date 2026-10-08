@@ -5,7 +5,8 @@ import { useTienda } from "@/context/TiendaContext";
 import { setPromo } from "@/lib/data";
 
 export function AdminPromo() {
-  const { promo } = useTienda();
+  const { promo, aplicarCatalogo } = useTienda();
+  const [error, setError] = useState("");
   const [activa, setActiva] = useState(false);
   const [titulo, setTitulo] = useState("");
   const [descripcion, setDescripcion] = useState("");
@@ -24,10 +25,15 @@ export function AdminPromo() {
   async function guardar(e: React.FormEvent) {
     e.preventDefault();
     setGuardando(true);
+    setError("");
     try {
-      await setPromo({ activa, titulo: titulo.trim(), descripcion: descripcion.trim(), precio: Number(precio) || 0 });
+      aplicarCatalogo(
+        await setPromo({ activa, titulo: titulo.trim(), descripcion: descripcion.trim(), precio: Number(precio) || 0 })
+      );
       setGuardado(true);
       setTimeout(() => setGuardado(false), 1500);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "No se pudo guardar la promo. Probá de nuevo.");
     } finally {
       setGuardando(false);
     }
@@ -60,6 +66,12 @@ export function AdminPromo() {
         <label>Precio</label>
         <input type="number" value={precio} onChange={(e) => setPrecio(e.target.value)} />
       </div>
+
+      {error && (
+        <p className="admin-hint" role="alert" style={{ color: "#ff6b6b" }}>
+          {error}
+        </p>
+      )}
 
       <button type="submit" className="admin-btn admin-btn-primary" disabled={guardando}>
         {guardado ? "¡Guardado!" : guardando ? "Guardando..." : "Guardar promo"}

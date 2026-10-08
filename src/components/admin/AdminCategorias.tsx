@@ -3,34 +3,51 @@
 import { useState } from "react";
 import { useTienda } from "@/context/TiendaContext";
 import { addCategoria, deleteCategoria, updateCategoria } from "@/lib/data";
+import type { Catalogo } from "@/lib/types";
 
 export function AdminCategorias() {
-  const { categorias, productos } = useTienda();
+  const { categorias, productos, aplicarCatalogo } = useTienda();
   const [nombre, setNombre] = useState("");
   const [editandoId, setEditandoId] = useState<string | null>(null);
   const [nombreEdit, setNombreEdit] = useState("");
+  const [error, setError] = useState("");
+
+  /** Corre un cambio, lo muestra al instante y deja el error a la vista si algo falla. */
+  async function aplicar(cambio: () => Promise<Catalogo>): Promise<boolean> {
+    setError("");
+    try {
+      aplicarCatalogo(await cambio());
+      return true;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "No se pudo guardar el cambio. Probá de nuevo.");
+      return false;
+    }
+  }
 
   async function agregar(e: React.FormEvent) {
     e.preventDefault();
     if (!nombre.trim()) return;
-    await addCategoria(nombre.trim(), categorias.length);
-    setNombre("");
+    if (await aplicar(() => addCategoria(nombre.trim()))) setNombre("");
   }
 
   async function guardarEdicion(id: string) {
     if (!nombreEdit.trim()) return;
-    await updateCategoria(id, { nombre: nombreEdit.trim() });
-    setEditandoId(null);
+    if (await aplicar(() => updateCategoria(id, nombreEdit.trim()))) setEditandoId(null);
   }
 
   async function eliminar(id: string) {
     const enUso = productos.some((p) => p.categoriaId === id);
     if (enUso && !confirm("Hay productos usando esta categoría, van a quedar sin categoría. ¿Eliminar igual?")) return;
-    await deleteCategoria(id);
+    await aplicar(() => deleteCategoria(id));
   }
 
   return (
     <div>
+      {error && (
+        <p className="admin-hint" role="alert" style={{ color: "#ff6b6b", marginBottom: ".8rem" }}>
+          {error}
+        </p>
+      )}
       <form className="admin-card" onSubmit={agregar} style={{ display: "flex", gap: ".6rem", alignItems: "flex-end" }}>
         <div className="field" style={{ flex: 1, marginBottom: 0 }}>
           <label>Nueva categoría</label>

@@ -21,6 +21,13 @@ export type Promo = {
   precio: number;
 };
 
+/** Todo lo que muestra la tienda, guardado en UN solo documento de Firestore (catalogo/principal). */
+export type Catalogo = {
+  categorias: Categoria[];
+  productos: Producto[];
+  promo: Promo | null;
+};
+
 export type ItemCarrito = {
   productoId: string;
   cantidad: number;

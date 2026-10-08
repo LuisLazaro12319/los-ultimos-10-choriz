@@ -16,7 +16,8 @@ const ANCHO_SALIDA = 960;
 const ALTO_SALIDA = 600;
 
 export function AdminProductos() {
-  const { productos, categorias } = useTienda();
+  const { productos, categorias, aplicarCatalogo } = useTienda();
+  const [error, setError] = useState("");
   const [form, setForm] = useState(VACIO);
   const [editandoId, setEditandoId] = useState<string | null>(null);
   const [guardando, setGuardando] = useState(false);
@@ -44,18 +45,19 @@ export function AdminProductos() {
     e.preventDefault();
     if (!form.nombre.trim() || !form.precio) return;
     setGuardando(true);
+    setError("");
     const data = {
       nombre: form.nombre.trim(),
       descripcion: form.descripcion.trim(),
       precio: Number(form.precio),
       categoriaId: form.categoriaId,
       imagen: form.imagen.trim() || "/img/promo.jpg",
-      orden: editandoId ? (productos.find((p) => p.id === editandoId)?.orden ?? productos.length) : productos.length,
     };
     try {
-      if (editandoId) await updateProducto(editandoId, data);
-      else await addProducto(data);
+      aplicarCatalogo(editandoId ? await updateProducto(editandoId, data) : await addProducto(data));
       cancelar();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "No se pudo guardar el producto. Probá de nuevo.");
     } finally {
       setGuardando(false);
     }
@@ -63,7 +65,12 @@ export function AdminProductos() {
 
   async function eliminar(id: string) {
     if (!confirm("¿Eliminar este producto?")) return;
-    await deleteProducto(id);
+    setError("");
+    try {
+      aplicarCatalogo(await deleteProducto(id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "No se pudo eliminar el producto. Probá de nuevo.");
+    }
   }
 
   function onArchivoElegido(e: React.ChangeEvent<HTMLInputElement>) {
@@ -90,6 +97,11 @@ export function AdminProductos() {
 
   return (
     <div>
+      {error && (
+        <p className="admin-hint" role="alert" style={{ color: "#ff6b6b", marginBottom: ".8rem" }}>
+          {error}
+        </p>
+      )}
       <form className="admin-card" onSubmit={guardar}>
         <h3 className="disp" style={{ fontSize: "1.1rem", marginBottom: "1rem" }}>
           {editandoId ? "Editar producto" : "Nuevo producto"}

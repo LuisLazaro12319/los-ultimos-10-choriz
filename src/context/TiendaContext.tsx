@@ -1,8 +1,8 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, useMemo, useCallback } from "react";
-import { subscribeCategorias, subscribeProductos, subscribePromo } from "@/lib/data";
-import type { Categoria, Producto, Promo } from "@/lib/types";
+import { cargarCatalogo, catalogoEnCache } from "@/lib/data";
+import type { Catalogo, Categoria, Producto, Promo } from "@/lib/types";
 
 export const PROMO_ID = "__promo__";
 
@@ -26,6 +26,8 @@ type TiendaContextType = {
   agregar: (productoId: string) => void;
   modificar: (productoId: string, delta: number) => void;
   vaciar: () => void;
+  /** Para el panel admin: muestra de inmediato el menu que devolvio el ultimo cambio guardado. */
+  aplicarCatalogo: (c: Catalogo) => void;
 };
 
 const TiendaContext = createContext<TiendaContextType | null>(null);
@@ -55,19 +57,28 @@ export function TiendaProvider({ children }: { children: React.ReactNode }) {
     } catch {}
   }, [carrito, listo]);
 
-  useEffect(() => {
-    const unsubCat = subscribeCategorias(setCategorias);
-    const unsubProd = subscribeProductos((data) => {
-      setProductos(data);
-      setCargando(false);
-    });
-    const unsubPromo = subscribePromo(setPromoState);
-    return () => {
-      unsubCat();
-      unsubProd();
-      unsubPromo();
-    };
+  const aplicarCatalogo = useCallback((c: Catalogo) => {
+    setCategorias(c.categorias);
+    setProductos(c.productos);
+    setPromoState(c.promo);
+    setCargando(false);
   }, []);
+
+  useEffect(() => {
+    let vivo = true;
+    // Pinta al instante lo que este navegador ya conoce y despues confirma con la base (1 lectura, o 0 si es reciente).
+    const guardado = catalogoEnCache();
+    if (guardado) aplicarCatalogo(guardado);
+    cargarCatalogo()
+      .then((c) => vivo && aplicarCatalogo(c))
+      .catch((err) => {
+        console.error("No se pudo leer el menu:", err);
+        if (vivo) setCargando(false);
+      });
+    return () => {
+      vivo = false;
+    };
+  }, [aplicarCatalogo]);
 
   const agregar = useCallback((productoId: string) => {
     setCarrito((prev) => ({ ...prev, [productoId]: (prev[productoId] ?? 0) + 1 }));
@@ -104,7 +115,20 @@ export function TiendaProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <TiendaContext.Provider
-      value={{ categorias, productos, promo, cargando, carrito, lineas, unidades, total, agregar, modificar, vaciar }}
+      value={{
+        categorias,
+        productos,
+        promo,
+        cargando,
+        carrito,
+        lineas,
+        unidades,
+        total,
+        agregar,
+        modificar,
+        vaciar,
+        aplicarCatalogo,
+      }}
     >
       {children}
     </TiendaContext.Provider>
