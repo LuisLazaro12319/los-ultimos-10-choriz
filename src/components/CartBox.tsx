@@ -81,7 +81,7 @@ export function CartBox() {
 
     ctx.font = "12px sans-serif";
     ctx.fillStyle = "rgba(26,26,26,0.6)";
-    ctx.fillText("Parrilla familiar · CABA", width / 2, 60);
+    ctx.fillText("Parrilla familiar · 6 de Agosto", width / 2, 60);
 
     let y = 100;
     ctx.font = "13px monospace";

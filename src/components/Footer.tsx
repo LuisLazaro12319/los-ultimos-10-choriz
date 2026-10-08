@@ -34,7 +34,7 @@ export function Footer() {
                 Ver en Google Maps
               </a>
             </p>
-            <p>Barrio 6 de Agosto · CABA</p>
+            <p>Barrio 6 de Agosto</p>
           </div>
         </div>
         <p className="footer-bottom">© 2026 Los Últimos 10 Choriz · Parrilla familiar</p>
