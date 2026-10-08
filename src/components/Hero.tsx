@@ -29,7 +29,7 @@ export function Hero() {
               Choripán de <span>verdad.</span>
             </h1>
             <p className="hero-desc">
-              Parrilla familiar para pedir por WhatsApp: choripán, bondiola, vacío, mixtos y platos de arroz con papas.
+              Parrilla familiar para pedir por WhatsApp: choripán, bondiola, vacío, mixtos y platos con guarniciones.
             </p>
 
             <div className="hero-actions">

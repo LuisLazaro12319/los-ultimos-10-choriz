@@ -48,7 +48,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
   title: "Los Últimos 10 Choriz | Parrilla & Choripanes",
   description:
-    "Los Últimos 10 Choriz — Parrilla familiar: choripán, bondiola, vacío, mixtos y platos de arroz con papas. Pedí por WhatsApp con delivery o retiro.",
+    "Los Últimos 10 Choriz — Parrilla familiar: choripán, bondiola, vacío, mixtos y platos con guarniciones. Pedí por WhatsApp con delivery o retiro.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

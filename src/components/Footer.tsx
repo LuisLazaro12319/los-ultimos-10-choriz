@@ -5,7 +5,7 @@ export function Footer() {
         <div className="footer-grid">
           <div className="footer-col">
             <div className="footer-brand">LOS ÚLTIMOS 10 CHORIZ</div>
-            <p>Parrilla familiar: choripán, bondiola, vacío, mixtos y platos de arroz con papas.</p>
+            <p>Parrilla familiar: choripán, bondiola, vacío, mixtos y platos con guarniciones.</p>
           </div>
           <div className="footer-col">
             <h4>Horarios</h4>

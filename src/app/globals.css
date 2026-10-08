@@ -98,9 +98,6 @@ nav {
 .hotspot-pill span { color: var(--primary); font-weight: 800; margin-right: 0.3rem; }
 
 /* STOCK BAR */
-.stock-ticker { background: rgba(255, 77, 0, 0.08); border-bottom: 1px solid rgba(255, 77, 0, 0.2); padding: 0.8rem 0; font-size: 0.82rem; }
-.stock-inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.8rem; }
-.stock-lbl { font-weight: 800; color: var(--primary); text-transform: uppercase; }
 
 /* PROMO BANNER */
 .promo-box {
