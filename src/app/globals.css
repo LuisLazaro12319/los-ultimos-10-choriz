@@ -148,11 +148,11 @@ nav {
 .card-body { padding: 1rem; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
 .card-title { font-size: 1.2rem; margin-bottom: 0.3rem; }
 .card-desc { font-size: 0.78rem; color: var(--fg-soft); margin-bottom: 0.8rem; }
-.card-foot { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 0.7rem; }
+.card-foot { display: flex; flex-direction: column; align-items: stretch; gap: 0.6rem; border-top: 1px solid var(--line); padding-top: 0.7rem; }
 .card-price { font-size: 1.1rem; font-weight: 700; color: var(--primary); font-family: var(--font-jetbrains), monospace; }
 .btn-add {
-  background: var(--primary); color: #fff; padding: 0.4rem 0.9rem; border-radius: 999px;
-  font-size: 0.75rem; font-weight: 800; text-transform: uppercase; transition: 0.2s;
+  background: var(--primary); color: #fff; padding: 0.55rem 0.9rem; border-radius: 999px; width: 100%;
+  font-size: 0.75rem; font-weight: 800; text-transform: uppercase; transition: 0.2s; text-align: center;
 }
 .btn-add:hover { background: var(--primary-dark); }
 
