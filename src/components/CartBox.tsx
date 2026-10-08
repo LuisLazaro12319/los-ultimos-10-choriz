@@ -198,16 +198,18 @@ export function CartBox() {
           </div>
         </div>
 
-        <div className="field">
-          <div className="gps-row">
-            <label>Dirección</label>
-            <button type="button" className="gps-btn" onClick={usarGPS}>
-              📍 Usar mi GPS
-            </button>
+        {modo === "Delivery" && (
+          <div className="field">
+            <div className="gps-row">
+              <label>Dirección</label>
+              <button type="button" className="gps-btn" onClick={usarGPS}>
+                📍 Usar mi GPS
+              </button>
+            </div>
+            <input value={direccion} onChange={(e) => setDireccion(e.target.value)} placeholder="Calle, número, piso" />
+            {ubicacionNota && <p className="gps-note">{ubicacionNota}</p>}
           </div>
-          <input value={direccion} onChange={(e) => setDireccion(e.target.value)} placeholder="Calle, número, piso" />
-          {ubicacionNota && <p className="gps-note">{ubicacionNota}</p>}
-        </div>
+        )}
 
         <div className="field">
           <label>Notas</label>
