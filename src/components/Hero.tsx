@@ -24,13 +24,12 @@ export function Hero() {
       <div className="wrap">
         <div className="hero-grid">
           <div>
-            <p className="hero-eyebrow">🔥 EDICIÓN DEFINITIVA</p>
+            <p className="hero-eyebrow">🔥 PARRILLA FAMILIAR</p>
             <h1 className="hero-title disp">
               Choripán de <span>verdad.</span>
             </h1>
             <p className="hero-desc">
-              Chorizo 100% puro cerdo seleccionado, dorado a fuego lento sobre brasas de quebracho blanco y servido en
-              pan crocante con chimichurri casero emulsionado 48hs.
+              Parrilla familiar para pedir por WhatsApp: choripán, bondiola, vacío, mixtos y platos de arroz con papas.
             </p>
 
             <div className="hero-actions">
@@ -49,11 +48,6 @@ export function Hero() {
             <div className="stage-img-wrap">
               <img src="/img/hero_choripan_apple_pro_1790258477411.jpg" alt="Choripán Pro" />
               <div className="stage-badge-price">{producto ? precio(producto.precio) : "$4.500"}</div>
-              <div className="stage-hotspots">
-                <div className="hotspot-pill">
-                  <span>●</span> Pan de Masa Madre Crocante
-                </div>
-              </div>
             </div>
           </div>
         </div>

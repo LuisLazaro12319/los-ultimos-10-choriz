@@ -3,11 +3,11 @@ export function StockTicker() {
     <div className="stock-ticker">
       <div className="wrap stock-inner">
         <div>
-          <span className="stock-lbl">Tanda en la Parrilla:</span>{" "}
-          <span>¡Quedan 7 de los últimos 10 chorizos! Pedí ahora antes de que se apaguen las brasas.</span>
+          <span className="stock-lbl">Pedí hoy:</span>{" "}
+          <span>Parrilla familiar, choripán, bondiola, vacío, mixtos y platos de arroz con papas.</span>
         </div>
         <a href="#menu" style={{ fontWeight: 700, color: "var(--primary)", textDecoration: "underline" }}>
-          Asegurar mi pedido →
+          Ver el menú →
         </a>
       </div>
     </div>

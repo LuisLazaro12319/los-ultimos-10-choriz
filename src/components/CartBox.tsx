@@ -81,7 +81,7 @@ export function CartBox() {
 
     ctx.font = "12px sans-serif";
     ctx.fillStyle = "rgba(26,26,26,0.6)";
-    ctx.fillText("Parrilla al paso · CABA", width / 2, 60);
+    ctx.fillText("Parrilla familiar · CABA", width / 2, 60);
 
     let y = 100;
     ctx.font = "13px monospace";
@@ -112,7 +112,7 @@ export function CartBox() {
     ctx.textAlign = "center";
     ctx.font = "italic 11px sans-serif";
     ctx.fillStyle = "rgba(26,26,26,0.5)";
-    ctx.fillText('"El chori que se agota primero."', width / 2, y);
+    ctx.fillText("¡Gracias por tu pedido!", width / 2, y);
 
     const a = document.createElement("a");
     a.download = `ticket-${Date.now()}.png`;

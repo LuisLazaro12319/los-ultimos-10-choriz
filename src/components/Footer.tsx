@@ -5,10 +5,7 @@ export function Footer() {
         <div className="footer-grid">
           <div className="footer-col">
             <div className="footer-brand">LOS ÚLTIMOS 10 CHORIZ</div>
-            <p>
-              &quot;El chori que se agota primero.&quot; Parrilla al paso con quebracho blanco, pan de masa madre y
-              chimichurri casero.
-            </p>
+            <p>Parrilla familiar: choripán, bondiola, vacío, mixtos y platos de arroz con papas.</p>
           </div>
           <div className="footer-col">
             <h4>Horarios</h4>
@@ -40,7 +37,7 @@ export function Footer() {
             <p>Barrio 6 de Agosto · CABA</p>
           </div>
         </div>
-        <p className="footer-bottom">© 2026 Los Últimos 10 Choriz · Parrilla tradicional al paso</p>
+        <p className="footer-bottom">© 2026 Los Últimos 10 Choriz · Parrilla familiar</p>
       </div>
     </footer>
   );
