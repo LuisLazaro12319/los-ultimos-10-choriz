@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useTienda } from "@/context/TiendaContext";
 import { precio } from "@/lib/formato";
 import { CartBox } from "@/components/CartBox";
+import { imgOptimizada } from "@/lib/cloudinary";
 
 export function MenuSection() {
   const { categorias, productos, agregar } = useTienda();
@@ -36,7 +37,7 @@ export function MenuSection() {
           {visibles.map((item) => (
             <div className="food-card" key={item.id}>
               <div className="card-img-wrap">
-                <img src={item.imagen} alt={item.nombre} />
+                <img src={imgOptimizada(item.imagen, 600)} alt={item.nombre} loading="lazy" decoding="async" />
               </div>
               <div className="card-body">
                 <div>

@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { useTienda } from "@/context/TiendaContext";
 import { addProducto, updateProducto, deleteProducto } from "@/lib/data";
 import { precio } from "@/lib/formato";
-import { subirImagenACloudinary } from "@/lib/cloudinary";
+import { subirImagenACloudinary, imgOptimizada } from "@/lib/cloudinary";
 import { ImageCropModal } from "./ImageCropModal";
 import type { Producto } from "@/lib/types";
 
@@ -138,7 +138,7 @@ export function AdminProductos() {
             <label>Foto del producto</label>
             <div className="admin-image-field">
               <div className={`admin-image-preview${form.imagen ? "" : " is-empty"}`}>
-                {form.imagen ? <img src={form.imagen} alt="Vista previa" /> : "Sin foto"}
+                {form.imagen ? <img src={imgOptimizada(form.imagen, 600)} alt="Vista previa" /> : "Sin foto"}
               </div>
               <div>
                 <input

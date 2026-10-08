@@ -2,6 +2,16 @@ const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
 const UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
 
 /**
+ * Pide a Cloudinary una version liviana de la foto (formato y calidad automaticos,
+ * ancho maximo `ancho`). Las URLs que no son de Cloudinary se devuelven sin tocar.
+ */
+export function imgOptimizada(url: string, ancho: number): string {
+  const marca = "/image/upload/";
+  if (!url.includes("res.cloudinary.com") || !url.includes(marca)) return url;
+  return url.replace(marca, `${marca}f_auto,q_auto,w_${ancho},c_limit/`);
+}
+
+/**
  * Sube una imagen (ya recortada) a Cloudinary usando un upload preset sin firma
  * (no requiere backend ni credenciales secretas: el preset es publico a proposito).
  * Devuelve la URL segura (https) de la imagen ya alojada.
