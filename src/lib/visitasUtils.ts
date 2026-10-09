@@ -6,7 +6,6 @@ export type DocVisitas = {
 export type ResumenVisitas = {
   hoy: number;
   total: number;
-  ultimosDias: { fecha: string; visitas: number }[];
 };
 
 /** Fecha (AAAA-MM-DD) en horario de Argentina, para que "el dia" no dependa de la zona del visitante. */
@@ -19,18 +18,6 @@ export function debeContar(ultimoDiaRegistrado: string | null, hoy: string): boo
   return ultimoDiaRegistrado !== hoy;
 }
 
-/** Resta `dias` a una fecha AAAA-MM-DD sin depender de la zona horaria de quien la calcula. */
-export function restarDias(fecha: string, dias: number): string {
-  const d = new Date(`${fecha}T12:00:00Z`);
-  d.setUTCDate(d.getUTCDate() - dias);
-  return d.toISOString().slice(0, 10);
-}
-
-export function resumir(doc: DocVisitas | undefined, hoy: string, cantidadDias = 7): ResumenVisitas {
-  const dias = doc?.dias ?? {};
-  const ultimosDias = Array.from({ length: cantidadDias }, (_, i) => {
-    const fecha = restarDias(hoy, i);
-    return { fecha, visitas: dias[fecha] ?? 0 };
-  });
-  return { hoy: dias[hoy] ?? 0, total: doc?.total ?? 0, ultimosDias };
+export function resumir(doc: DocVisitas | undefined, hoy: string): ResumenVisitas {
+  return { hoy: doc?.dias?.[hoy] ?? 0, total: doc?.total ?? 0 };
 }

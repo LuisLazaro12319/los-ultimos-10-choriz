@@ -4,11 +4,6 @@ import { useCallback, useEffect, useState } from "react";
 import { cargarVisitas } from "@/lib/visitas";
 import type { ResumenVisitas } from "@/lib/visitasUtils";
 
-function formatearDia(fecha: string) {
-  const [anio, mes, dia] = fecha.split("-");
-  return `${dia}/${mes}/${anio}`;
-}
-
 export function AdminVisitas() {
   const [datos, setDatos] = useState<ResumenVisitas | null>(null);
   const [error, setError] = useState("");
@@ -58,20 +53,8 @@ export function AdminVisitas() {
         </div>
       </div>
 
-      {datos && (
-        <div style={{ marginTop: ".8rem" }}>
-          {datos.ultimosDias.map((d) => (
-            <div className="admin-list-row" key={d.fecha} style={{ padding: ".4rem 0" }}>
-              <span style={{ fontSize: ".8rem", color: "var(--fg-soft)" }}>{formatearDia(d.fecha)}</span>
-              <span className="mono">{d.visitas}</span>
-            </div>
-          ))}
-        </div>
-      )}
-
       <p className="admin-hint">
-        Cuenta una visita por celular o computadora cada día (si alguien recarga la página, no suma de nuevo). Los
-        números empiezan desde que se activó el contador.
+        Cuenta una visita por celular o computadora cada día (si alguien recarga la página, no suma de nuevo).
       </p>
     </div>
   );
