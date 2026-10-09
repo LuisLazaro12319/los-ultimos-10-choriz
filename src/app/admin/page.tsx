@@ -9,6 +9,7 @@ import { AdminLogin } from "@/components/admin/AdminLogin";
 import { AdminProductos } from "@/components/admin/AdminProductos";
 import { AdminCategorias } from "@/components/admin/AdminCategorias";
 import { AdminPromo } from "@/components/admin/AdminPromo";
+import { AdminVisitas } from "@/components/admin/AdminVisitas";
 
 type Tab = "productos" | "categorias" | "promo";
 
@@ -93,6 +94,8 @@ export default function AdminPage() {
             {errorDatos}
           </p>
         )}
+
+        <AdminVisitas />
 
         <div className="admin-tabs">
           <button className={`admin-tab ${tab === "productos" ? "active" : ""}`} onClick={() => setTab("productos")}>
