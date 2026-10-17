@@ -11,22 +11,44 @@ export function CartBox() {
   const [direccion, setDireccion] = useState("");
   const [notas, setNotas] = useState("");
   const [ubicacionNota, setUbicacionNota] = useState("");
+  const [gpsEstado, setGpsEstado] = useState<"idle" | "buscando" | "ok" | "error">("idle");
   const gpsLinkRef = useRef("");
 
   const vacio = lineas.length === 0;
 
   function usarGPS() {
-    if (!navigator.geolocation) return;
-    setUbicacionNota("Buscando coordenadas GPS...");
+    if (!navigator.geolocation) {
+      setGpsEstado("error");
+      setUbicacionNota("Tu navegador no permite usar el GPS. Escribí tu dirección abajo.");
+      return;
+    }
+    setGpsEstado("buscando");
+    setUbicacionNota("");
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         gpsLinkRef.current = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
-        setUbicacionNota("✓ Ubicación GPS fijada correctamente.");
+        setGpsEstado("ok");
+        setUbicacionNota("Ubicación fijada. Si querés, sumá calle y número abajo para ayudar al repartidor.");
         setDireccion((prev) => prev || `GPS: ${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`);
       },
-      () => setUbicacionNota("No se pudo obtener la ubicación automáticamente.")
+      (error) => {
+        setGpsEstado("error");
+        setUbicacionNota(
+          error.code === error.PERMISSION_DENIED
+            ? "No pudimos acceder a tu ubicación. Activá el permiso del navegador o escribí tu dirección abajo."
+            : "No se pudo obtener la ubicación. Probá de nuevo o escribí tu dirección abajo."
+        );
+      },
+      { enableHighAccuracy: true, timeout: 12000, maximumAge: 30000 }
     );
   }
+
+  const gpsTexto =
+    gpsEstado === "buscando"
+      ? "Buscando tu ubicación..."
+      : gpsEstado === "ok"
+        ? "Ubicación fijada · tocá para actualizar"
+        : "Usar mi ubicación actual (GPS)";
 
   function enviarPedido(e: React.FormEvent) {
     e.preventDefault();
@@ -200,14 +222,23 @@ export function CartBox() {
 
         {modo === "Delivery" && (
           <div className="field">
-            <div className="gps-row">
-              <label>Dirección</label>
-              <button type="button" className="gps-btn" onClick={usarGPS}>
-                📍 Usar mi GPS
-              </button>
-            </div>
-            <input value={direccion} onChange={(e) => setDireccion(e.target.value)} placeholder="Calle, número, piso" />
-            {ubicacionNota && <p className="gps-note">{ubicacionNota}</p>}
+            <label>Dirección</label>
+            <button
+              type="button"
+              className={`gps-big ${gpsEstado}`}
+              onClick={usarGPS}
+              disabled={gpsEstado === "buscando"}
+              aria-live="polite"
+            >
+              <span aria-hidden="true">{gpsEstado === "ok" ? "✓" : "📍"}</span>
+              <span>{gpsTexto}</span>
+            </button>
+            <input
+              value={direccion}
+              onChange={(e) => setDireccion(e.target.value)}
+              placeholder="O escribí tu dirección: calle, número, piso"
+            />
+            {ubicacionNota && <p className={`gps-note ${gpsEstado === "error" ? "error" : ""}`}>{ubicacionNota}</p>}
           </div>
         )}
 
